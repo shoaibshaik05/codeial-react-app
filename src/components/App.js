@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { useAuth } from '../hooks';
-import { Home, Login, Signup, Settings } from '../pages';
+import { Home, Login, Signup, Settings, UserProfile } from '../pages';
 import { Loader, Navbar } from './';
 
 function PrivateRoute({ children, ...rest }) {
@@ -33,6 +33,7 @@ const Page404 = () => {
 function App() {
   const auth = useAuth();
 
+  console.log('auth', auth);
   if (auth.loading) {
     return <Loader />;
   }
@@ -56,6 +57,10 @@ function App() {
 
           <PrivateRoute exact path="/settings">
             <Settings />
+          </PrivateRoute>
+
+          <PrivateRoute exact path="/user/:userId">
+            <UserProfile />
           </PrivateRoute>
 
           <Route>
