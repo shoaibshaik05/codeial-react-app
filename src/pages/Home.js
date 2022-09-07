@@ -1,38 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-
-import { Comment, Loader, FriendsList } from '../components';
-import { getPosts } from '../api';
 import styles from '../styles/home.module.css';
-import { useAuth } from '../hooks';
+import { useAuth, usePosts } from '../hooks';
 
 const Home = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState([]);
   const auth = useAuth();
+  const posts = usePosts();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await getPosts();
-
-      if (response.success) {
-        setPosts(response.data.posts);
-      }
-
-      setLoading(false);
-    };
-
-    fetchPosts();
-  }, []);
-
-  if (loading) {
+  if (posts.loading) {
     return <Loader />;
   }
 
   return (
     <div className={styles.home}>
       <div className={styles.postsList}>
-        {posts.map((post) => (
+        <CreatePost />
+        {posts.data.map((post) => (
           <div className={styles.postWrapper} key={`post-${post._id}`}>
             <div className={styles.postHeader}>
               <div className={styles.postAvatar}>
@@ -55,7 +36,7 @@ const Home = () => {
                   <span className={styles.postTime}>a minute ago</span>
                 </div>
               </div>
-              <div className={styles.postContent}>{post.conent}</div>
+              <div className={styles.postContent}>{post.content}</div>
 
               <div className={styles.postActions}>
                 <div className={styles.postLike}>
@@ -63,7 +44,7 @@ const Home = () => {
                     src="https://image.flaticon.com/icons/svg/1077/1077035.svg"
                     alt="likes-icon"
                   />
-                  <span>5</span>
+                  <span>{post.likes.length}</span>
                 </div>
 
                 <div className={styles.postCommentsIcon}>
